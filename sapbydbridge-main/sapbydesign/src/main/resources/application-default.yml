@@ -1,0 +1,9 @@
+#----------------  SPRING  ----------------
+spring:
+  #----------------  REDIS  ----------------
+  redis:
+    host: ${service.db.host}
+    port: ${service.db.port}
+    password: ${service.db.password}
+    timeout: ${service.db.timeout}
+

@@ -1,0 +1,58 @@
+#---------------    SERVICE   ----------------
+service:
+  profile: dev
+  type: erp
+  scheduler:
+    connectAndSync: 1800000
+  users:
+    - name: ByDBridge@company-srl.it
+      bridgeId: ByDBridge-02-dev
+      #bridgeId: ByDBridge-test
+  storage:
+    password: qwerty
+  #-----------------   DB (REDIS) Configuration  -----------------
+  db:
+    host: luca.pentolone.cloud
+    port: 9736
+    timeout: 60000
+    password: Hjjx@egfp2@Lm=Pa
+  #-----------------   MQTT Configuration  -----------------
+  mqtt:
+    URI: ${MQTT_URI:tcp://luca.pentolone.cloud:12345}
+    automaticReconnect: true
+    cleanSession: false
+    connectionTimeout: 10
+    maxInFlight: 30000
+    clientId: ${service.users[0].bridgeId}
+    clientEmail: ${service.users[0].name}
+    bridgeType:
+      - ${service.type}
+    serviceType: bridge
+    profile: ${service.profile}
+    startWithOut: ${service.mqtt.profile}/${service.mqtt.serviceType}/${service.mqtt.clientId}
+    startWithIn: ${service.mqtt.profile}/service
+    qos: 2
+    subscriptions:
+      - topic: ${service.mqtt.startWithIn}/+/start
+        qos: ${service.mqtt.qos}
+        alias: start
+      - topic: ${service.mqtt.startWithIn}/${service.mqtt.bridgeType[0]}/find/+
+        qos: ${service.mqtt.qos}
+        alias: find
+      - topic: ${service.mqtt.startWithIn}/${service.mqtt.clientId}/config/+
+        qos: ${service.mqtt.qos}
+        alias: config
+      - topic: ${service.mqtt.startWithIn}/${service.mqtt.clientId}/reset/+
+        qos: ${service.mqtt.qos}
+        alias: reset
+      - topic: ${service.mqtt.startWithIn}/${service.mqtt.clientId}/sync/+
+        qos: ${service.mqtt.qos}
+        alias: sync
+      - topic: ${service.mqtt.startWithIn}/${service.mqtt.clientId}/+/+/+/#
+        qos: ${service.mqtt.qos}
+#-----------------   LOG  -----------------
+logging:
+  level:
+    root: INFO
+    eu.companys: DEBUG
+    com.sap.cloud.sdk.cloudplatform.connectivity: WARN

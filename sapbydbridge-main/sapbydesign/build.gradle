@@ -1,0 +1,134 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'org.springframework.boot' version "${springBoot}"
+    id 'io.spring.dependency-management' version "${dependencyManagement}"
+}
+
+group = 'eu.company.connector.sapbydesignbridge'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = '11'
+
+
+repositories {
+    mavenCentral()
+    maven {
+        url "${repoApiUrl}/groups/companys/-/packages/maven"
+        name "GitLab"
+        credentials(HttpHeaderCredentials) {
+            name = repoApiUser
+            value = repoApiUser == 'Private-Token' ? System.getenv("GITLAB_PERSONAL_TOKEN") : System.getenv("CI_BUILD_TOKEN")
+        }
+        authentication {
+            header(HttpHeaderAuthentication)
+        }
+    }
+    maven {
+        url "${repoApiUrl}/groups/v.digital/-/packages/maven"
+        name "GitLab"
+        credentials(HttpHeaderCredentials) {
+            name = repoApiUser
+            value = repoApiUser == 'Private-Token' ? System.getenv("GITLAB_PERSONAL_TOKEN") : System.getenv("CI_BUILD_TOKEN_V")
+        }
+        authentication {
+            header(HttpHeaderAuthentication)
+        }
+    }
+}
+
+dependencies {
+    // Materials Odata entities
+    implementation 'eu.companys.connector.lib:bydmaterialodata:1.0.1.TEST'
+
+    // https://mvnrepository.com/artifact/com.sap.cloud.sdk.archetypes/scp-cf-spring
+    implementation group: 'com.sap.cloud.sdk.archetypes', name: 'scp-cf-spring', version: "${SAP_SDK}"
+
+    //OData Client for OData 2.0 and 4.0 services
+    // https://mvnrepository.com/artifact/com.sap.cloud.sdk.datamodel/odata-client
+    implementation group: 'com.sap.cloud.sdk.datamodel', name: 'odata-client', version: "${SAP_SDK}"
+
+    //OData Services data model (VDM) - core classes.
+    // https://mvnrepository.com/artifact/com.sap.cloud.sdk.datamodel/odata-core
+    implementation group: 'com.sap.cloud.sdk.datamodel', name: 'odata-core', version: "${SAP_SDK}"
+
+    //SAP S/4HANA Connectivity
+    // https://mvnrepository.com/artifact/com.sap.cloud.sdk.s4hana/s4hana-connectivity
+    implementation group: 'com.sap.cloud.sdk.s4hana', name: 's4hana-connectivity', version: "${SAP_SDK}"
+
+// https://mvnrepository.com/artifact/com.sap.cloud.sdk.datamodel/odata-generator-utility
+    implementation group: 'com.sap.cloud.sdk.datamodel', name: 'odata-generator-utility', version: "${SAP_SDK}"
+
+// https://mvnrepository.com/artifact/com.sap.cloud.sdk/sdk-parent
+    implementation group: 'com.sap.cloud.sdk', name: 'sdk-parent', version: "${SAP_SDK}", ext: 'pom'
+
+
+    //manageOAuth2basedservicebindings
+    implementation'com.sap.cloud.security.xsuaa:token-client:3.0.1'
+
+    //  per com.sap.cloud.sdk.odatav2.connectivity.*includere
+    implementation group:'com.sap.cloud.servicesdk',name:'odatav2-connectivity',version:'1.40.11'
+
+    //MQtt
+    implementation group: 'eu.companys.commons', name: 'spring-boot-starter-mqtt', version: "${mqtt}"
+
+
+    //
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+
+    annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
+
+    annotationProcessor group: 'org.projectlombok', name: 'lombok'
+    compileOnly group: 'org.projectlombok', name: 'lombok'
+
+
+    testImplementation group: 'junit', name: 'junit'
+
+//    testImplementation platform('org.junit:junit-bom:5.9.1')
+//    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+//    Aggiunto artifact odata-va-core
+//    Per permettere import delle classi seguenti nella classe eu.company.connector.sapbydesignbridge.service.sap.ASyncData
+//    import com.sap.cloud.sdk.datamodel.odatav4.core.ComplexProperty;
+//    import com.sap.cloud.sdk.datamodel.odatav4.core.NavigationProperty;
+//    import com.sap.cloud.sdk.datamodel.odatav4.core.Property;
+//    import com.sap.cloud.sdk.datamodel.odatav4.core.SimpleProperty;
+//    import com.sap.cloud.sdk.datamodel.odatav4.expression.FilterableBoolean;
+    implementation group: 'com.sap.cloud.sdk.datamodel', name: 'odata-v4-core', version: "${SAPOData}"
+
+}
+
+test {
+    useJUnitPlatform()
+    dependencies {
+        testCompileOnly 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+            exclude group: 'com.vaadin.external.google', module: 'android-json'
+        }
+    }
+}
+
+processResources {
+    filesMatching('application.yml') {
+        expand(project.properties)
+    }
+}
+
+springBoot {
+    buildInfo()
+}
+
+bootJar {
+    enabled = true
+    manifest {
+        attributes(
+                "Implementation-Title": project.name,
+                "Implementation-Version": project.version
+        )
+    }
+}

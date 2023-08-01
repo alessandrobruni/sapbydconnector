@@ -1,0 +1,57 @@
+#---------------    SERVICE   ----------------
+service:
+  profile: ${ACTIVE_PROFILE}
+  type: erp
+  scheduler:
+    connectAndSync: ${SYNC_REFRESH}
+  users:
+    - name: B1Bridge@companys.eu
+      bridgeId: ${BRIDGE_ID}
+  storage:
+    password: ${STORAGE_PASSWORD}
+  #-----------------   DB (REDIS) Configuration  -----------------
+  db:
+    host: ${DATABASE_HOST}
+    port: ${DATABASE_PORT}
+    timeout: ${DATABASE_TIMEOUT}
+    password: ${DATABASE_PASSWORD}
+  #-----------------   MQTT Configuration  -----------------
+  mqtt:
+    URI: ${MQTT_URI}
+    automaticReconnect: true
+    cleanSession: false
+    maxInFlight: ${MQTT_MAX_IN_FLIGHT}
+    connectionTimeout: ${MQTT_TIMEOUT}
+    clientId: ${service.users[0].bridgeId}
+    clientEmail: ${service.users[0].name}
+    bridgeType:
+      - ${service.type}
+    profile: ${service.profile}
+    serviceType: bridge
+    startWithOut: ${service.mqtt.profile}/${service.mqtt.serviceType}/${service.mqtt.clientId}
+    startWithIn: ${service.mqtt.profile}/service
+    qos: 2
+    subscriptions:
+      - topic: ${service.mqtt.startWithIn}/+/start
+        qos: ${service.mqtt.qos}
+        alias: start
+      - topic: ${service.mqtt.startWithIn}/${service.mqtt.bridgeType[0]}/find/+
+        qos: ${service.mqtt.qos}
+        alias: find
+      - topic: ${service.mqtt.startWithIn}/${service.mqtt.clientId}/config/+
+        qos: ${service.mqtt.qos}
+        alias: config
+      - topic: ${service.mqtt.startWithIn}/${service.mqtt.clientId}/reset/+
+        qos: ${service.mqtt.qos}
+        alias: reset
+      - topic: ${service.mqtt.startWithIn}/${service.mqtt.clientId}/sync/+
+        qos: ${service.mqtt.qos}
+        alias: sync
+      - topic: ${service.mqtt.startWithIn}/${service.mqtt.clientId}/+/+/+/#
+        qos: ${service.mqtt.qos}
+#-----------------   LOG  -----------------
+logging:
+  level:
+    root: ERROR
+    eu.companys: INFO
+    com.sap.cloud.sdk.cloudplatform.connectivity: WARN

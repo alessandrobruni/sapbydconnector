@@ -1,0 +1,29 @@
+#----------------  SERVER  ----------------
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+#----------------   INFO   ----------------
+info:
+  app:
+    version: ${version}
+#----------------  SPRING  ----------------
+spring:
+  application:
+    name: ${name}
+  profiles:
+    active: ${profileApp}
+#--------------  MANAGEMENT  --------------
+management:
+  server:
+    port: 8081
+  endpoint:
+    health:
+      probes:
+        enabled: true
+    loggers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: loggers,health,info,metrics
