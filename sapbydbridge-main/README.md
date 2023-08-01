@@ -16,7 +16,7 @@ MQTT (Message Queuing Telemetry Transport) is a lightweight messaging protocol b
 a publish/subscribe model, allowing devices to publish messages on specific
 topics and recipients to subscribe to receive them.
 
-![MQTT](./sapbydesign/src/main/resources/MQTT.png)
+![MQTT](./sapbydesign/img/MQTT.png)
 ## OData
 
 OData (Open Data Protocol) is an open protocol that allows the creation and consumption of RESTful APIs that are queryable and interoperable in a simple and standardized way. The retrieval and modification of data are performed using URL-based service calls.
@@ -40,6 +40,6 @@ the broker, thereby streamlining communication among the various services regist
 
 
 #### Microservice overview
-![Microservice](./sapbydesign/src/main/resources/Connettore.png)
+![Microservice](./sapbydesign/img/Connettore.png)
 
 
