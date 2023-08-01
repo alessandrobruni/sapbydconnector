@@ -128,7 +128,6 @@ public class MaterialServiceEntity extends ASyncData<Material> implements ISyncD
 //                .stream().map(i -> itemMapper.mapEntityToResponse((Item) i, element, customEntities, fixModules, bridgeConfiguration.getProperties())).collect(Collectors.toSet());
 
 
-        // Chimata semplice, facendo restituire tutto senza al momento impostare query
         Collection<Material> materialCollection = getMaterials(tenant,bridgeConfiguration);
         var itemGetDTOStream = materialCollection
                 .stream()
