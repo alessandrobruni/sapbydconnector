@@ -1,33 +1,37 @@
-# SAPByDBridge
+# ByDesign Microservice
 
+In this project the microservice is built with integrating a onnector ad a bridge. 
+Built in Java v.11, the connector allows access to services and information residing
+in an SAP ERP (SAP ByDesign product). 
+The connector utilizes the OData protocol to query and manipulate ERP data. 
+Additionally, a bridge uses the Spring framework to interact with an MQTT 
+(Message Queuing Telemetry Transport) broker and expose the services, 
+mediated by the connector, to other systems.
 
-In questo progetto  un connettore realizzato in Java (versione 11)  permette di accedere ai servizi ed alle informazioni residenti in un ERP SAP (prodotto SAP ByDesign). Il connettore utilizza il protocollo OData per interrogare e manipolare i dati dell'ERP. Inoltre un bridge utilizza il framework Spring per interagire con un broker MQTT (Message Queuing Telemetry Transport) ed esporre i servizi, mediati dal connettore,verso altri sistemi . 
+## Examples of Possible Usage
+Through OData, it is possible to query SAP products, sales orders, invoices, warehouse stock, etc., which a company has recorded in the ERP. This information can be made available to services registered on MQTT, such as billing services, quality controls, e-commerce, etc.
 
+## MQTT
+MQTT (Message Queuing Telemetry Transport) is a lightweight messaging protocol based on 
+a publish/subscribe model, allowing devices to publish messages on specific
+topics and recipients to subscribe to receive them.
 
-
+![MQTT](/sapbydesign/src/main/resources/MQTT.png)
 ## OData
 
-OData (Open Data Protocol) è un protocollo aperto che consente la creazione e il consumo di API RESTful interrogabili e interoperabili in modo semplice e standardizzato. Il recupero e la modifica dei dati viene eseguita con chiamate di servizio basate su URL.
+OData (Open Data Protocol) is an open protocol that allows the creation and consumption of RESTful APIs that are queryable and interoperable in a simple and standardized way. The retrieval and modification of data are performed using URL-based service calls.
+## SAP and OData
 
-## SAP e OData
+SAP allows the creation of OData services based on its Business Objects, generating a metadata representation in XML format.
+## Generation of Java Client and Connector
 
-SAP permette di creare dei servizi OData a partire dai suoi Business Object, generandone una rappresentazione metadata in formato XML. 
+The metadata is used to generate, in this case, a Java client that represents SAP Business Objects and their connected services. This process automates the client's creation, making the system easily adaptable to any changes in the ERP's data model. The connector created in the project uses the client (representation of SAP BOs and connected services) to access the ERP and query/modify the system through RESTful calls with authentication.
+## Integration in MQTT
 
-## Generazione del Client Java e del connettore 
-
-I metadata sono utilizzati per generare, in questo caso, un client Java che rappresenta i Business Object SAP ed i servizi connessi.
-Questo processo automatizza la creazione del client, rendendo il sistema facilmente adattabile a qualsiasi cambiamento nel modello dei dati dell'ERP.
-Il connettore creato nel progetto utilizza il client ( rappresentazione  dei BO SAP ed i servizi connessi) per accedere all' ERP ed interrogare/modificare il sistema tramite chiamate RESTFull con autenticazione. 
-
-## Integrazione con MQTT
-
-Il bridge creato nle progetto utilizza il framework Spring per registrarsi ad un broker MQTT ed interagire con esso in modalità asincrona. Le informazioni  recuperate dall'ERP vengono inviate al broker tramite messaggi e viceversa il broker può chiedere al bridge di accedere ai servizi esposti da SAP. Il compito del bridge è anche quello di tradurre gli oggetti del client in stutture normalizzate sul broker uniformando le comunicazioni tra i diversi servizi registrati sul broker.
-
-## Esempi di possibili utilizzo 
-
-Tramite OData è possibile interrogare in SAP prodotti, ordini di vendita, fatture, giacenze magazzino ecc. che un'azienda ha registrate sull'ERP. Queste informazioni possono essere messe a disposizione di servizi registrati sull'MQTT, come servizi di fatturazione, controlli di qualità, ecommerce ecc.
+The bridge created in the project uses the Spring framework to register with an MQTT broker and interact with it asynchronously. The information retrieved from the ERP is sent to the broker through messages, and vice versa, the broker can request the bridge to access services exposed by SAP. The bridge's task is also to translate the client objects into standardized structures on the broker, thereby standardizing communications between the different services registered on the broker.
 
 
-## Licenza
+#### Microservice overview
+![Microservice](/sapbydesign/src/main/resources/Connettore.png)
 
-// Inserisci qui le informazioni sulla licenza del tuo progetto.
+
